@@ -32,102 +32,94 @@
     </script>
     <style>
         /* Smooth Toggle Switch - Petronas Themed */
-        .pt-toggle {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
+        .pt-toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+        @media (min-width: 640px) { .pt-toggle { width: 50px; height: 26px; } }
         .pt-toggle input { opacity: 0; width: 0; height: 0; }
-        .pt-slider {
-            position: absolute; cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #00A19C; /* Normal = Teal */
-            transition: .3s; border-radius: 34px;
-        }
-        .pt-slider:before {
-            position: absolute; content: "";
-            height: 20px; width: 20px; left: 3px; bottom: 3px;
-            background-color: white; transition: .3s; border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        input:checked + .pt-slider { background-color: #E5E7EB; } /* Isolated = Gray */
-        input:checked + .pt-slider:before { transform: translateX(24px); }
+        .pt-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #00A19C; transition: .3s; border-radius: 34px; }
+        .pt-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        @media (min-width: 640px) { .pt-slider:before { height: 20px; width: 20px; } }
+        input:checked + .pt-slider { background-color: #E5E7EB; } 
+        input:checked + .pt-slider:before { transform: translateX(20px); }
+        @media (min-width: 640px) { input:checked + .pt-slider:before { transform: translateX(24px); } }
 
-        /* Flashing Alarm Animation */
+        /* Flashing Alarm */
         @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); border-color: #f3f4f6; }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: #EF4444; }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); border-color: #f3f4f6; }
         }
-        .alarm-active {
-            animation: pulse-red 2s infinite;
-            border-color: #EF4444 !important;
-        }
+        .alarm-active { animation: pulse-red 2s infinite; }
+        
+        /* Hide scrollbar for compact mobile filters */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         body { background-color: #F3F4F6; }
     </style>
 </head>
 <body class="antialiased text-textmain">
 
     <!-- STICKY HEADER -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm transition-all duration-300" id="header-container">
         
-        <!-- ALARM BANNER (Hidden by default) -->
-        <div id="alarm-banner" class="hidden bg-red-600 text-white text-center py-2 text-sm font-bold tracking-wide uppercase transition-all duration-300">
-            ⚠️ CRITICAL ALARM: Available capacity has dropped below Target Demand! ⚠️
+        <!-- ALARM BANNER -->
+        <div id="alarm-banner" class="hidden bg-red-600 text-white text-center py-1 sm:py-2 text-[10px] sm:text-sm font-bold tracking-wide uppercase transition-all duration-300">
+            ⚠️ CAPACITY BELOW TARGET DEMAND! ⚠️
         </div>
 
-        <div class="max-w-[1500px] mx-auto px-6 py-4 flex flex-col xl:flex-row justify-between items-center gap-4">
+        <div class="max-w-[1500px] mx-auto px-3 sm:px-6 py-2 sm:py-4 flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-2 sm:gap-4">
             
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-petronas-main to-petronas-dark flex items-center justify-center text-white font-bold text-xl shadow-md">
-                    ⚡
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-gray-900">Cascading Simulator</h1>
-                    <p class="text-sm text-textsub font-medium">GDC Plant 2 • Hierarchical Power Matrix</p>
+            <!-- Title Row -->
+            <div class="flex justify-between items-center w-full xl:w-auto">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-petronas-main to-petronas-dark flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-md flex-shrink-0">⚡</div>
+                    <div>
+                        <h1 class="text-lg sm:text-2xl font-bold tracking-tight text-gray-900 leading-tight">Cascading Simulator</h1>
+                        <p class="hidden sm:block text-sm text-textsub font-medium">GDC Plant 2 • Hierarchical Power Matrix</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- FILTERS -->
-            <div class="flex flex-wrap gap-4 items-center">
-                <!-- Year Filter -->
-                <div class="bg-gray-100 p-1 rounded-xl flex items-center shadow-inner border border-gray-200" id="year-filters"></div>
+            <!-- Filters & KPI Block -->
+            <div class="flex flex-col sm:flex-row w-full xl:w-auto items-stretch sm:items-center gap-2 sm:gap-4">
                 
-                <!-- Target Demand Filter -->
-                <div class="bg-gray-100 p-1 rounded-xl flex items-center shadow-inner border border-gray-200" id="demand-filters"></div>
-            </div>
-
-            <!-- KPI & RESET -->
-            <div class="flex items-center gap-6">
-                <div class="text-right">
-                    <p class="text-xs font-bold text-textsub tracking-wider uppercase mb-0.5">Target vs Available</p>
-                    <p class="text-3xl font-black tracking-tight">
-                        <span id="kpi-target" class="text-gray-400 text-xl">26,500</span>
-                        <span class="text-gray-300 mx-1">/</span>
-                        <span id="kpi-rt" class="text-petronas-main transition-colors duration-300">0</span> 
-                        <span class="text-lg text-textsub font-bold">RT</span>
-                    </p>
+                <!-- Filters Container (Scrollable on mobile) -->
+                <div class="flex flex-col gap-1.5 sm:gap-2 w-full">
+                    <div class="bg-gray-100 p-1 rounded-lg flex items-center shadow-inner border border-gray-200 overflow-x-auto hide-scrollbar" id="year-filters"></div>
+                    <div class="bg-gray-100 p-1 rounded-lg flex items-center shadow-inner border border-gray-200 overflow-x-auto hide-scrollbar" id="demand-filters"></div>
                 </div>
-                <button onclick="resetAll()" class="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition-colors duration-200">
-                    Reset SLD
-                </button>
+
+                <!-- KPI & Reset Row -->
+                <div id="kpi-block" class="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 bg-gray-50 sm:bg-transparent p-2 sm:p-0 rounded-lg sm:rounded-none border border-gray-100 sm:border-transparent transition-all duration-300">
+                    <div class="text-left sm:text-right">
+                        <p class="text-[9px] sm:text-xs font-bold text-textsub tracking-wider uppercase mb-0 sm:mb-0.5">Target vs Available</p>
+                        <p class="text-lg sm:text-3xl font-black tracking-tight leading-none mt-0.5 sm:mt-0">
+                            <span id="kpi-target" class="text-gray-400 text-sm sm:text-xl">26,500</span>
+                            <span class="text-gray-300 mx-0.5 sm:mx-1">/</span>
+                            <span id="kpi-rt" class="text-petronas-main transition-colors duration-300">0</span> 
+                            <span class="text-[10px] sm:text-lg text-textsub font-bold">RT</span>
+                        </p>
+                    </div>
+                    <button onclick="resetAll()" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold shadow-md transition-colors duration-200 flex-shrink-0">
+                        Reset SLD
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-[1500px] mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-8">
             
             <!-- LEFT PANEL: HIERARCHICAL SWITCHGEARS -->
-            <div class="xl:col-span-3 space-y-6">
-                <div class="bg-card rounded-2xl shadow-soft p-5 border border-gray-100">
-                    <h2 class="text-lg font-bold mb-1 flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-petronas-main"></span> Switchgear Network
+            <div class="xl:col-span-3 space-y-4 sm:space-y-6">
+                <div class="bg-card rounded-xl sm:rounded-2xl shadow-soft p-3 sm:p-5 border border-gray-100">
+                    <h2 class="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-petronas-main"></span> Switchgear Network
                     </h2>
-                    <p class="text-xs text-textsub mb-5 leading-relaxed">Isolating an upstream breaker will automatically cut power to all downstream panels and chiller dependencies.</p>
+                    <p class="text-[11px] sm:text-xs text-textsub mb-3 sm:mb-5 leading-relaxed">Isolating an upstream breaker will automatically cut power to all downstream panels.</p>
                     
-                    <div id="switchgear-list" class="space-y-5">
+                    <div id="switchgear-list" class="space-y-3 sm:space-y-5">
                         <!-- Sections injected via JS -->
                     </div>
                 </div>
@@ -135,12 +127,12 @@
 
             <!-- RIGHT PANEL: CHILLER IMPACT MATRIX -->
             <div class="xl:col-span-9">
-                <div class="flex justify-between items-end mb-4 px-1">
-                    <h2 class="text-xl font-bold text-gray-800">Chiller Fleet Impact Matrix</h2>
-                    <p id="fleet-count" class="text-sm font-bold text-petronas-main bg-petronas-light px-3 py-1 rounded-full">0 Active Trains</p>
+                <div class="flex justify-between items-end mb-3 sm:mb-4 px-1">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800">Chiller Impact Matrix</h2>
+                    <p id="fleet-count" class="text-[10px] sm:text-sm font-bold text-petronas-main bg-petronas-light px-2 py-1 rounded-full">0 Active</p>
                 </div>
                 
-                <div id="train-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div id="train-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                     <!-- Train cards injected here -->
                 </div>
             </div>
@@ -149,25 +141,11 @@
     </main>
 
     <script>
-        // --- 1. SLD HIERARCHY (UPSTREAM CASCADING) ---
         const PARENT_MAP = {
             "11kV Incomer A": "33kV GIS Line A",
             "11kV Incomer B": "33kV GIS Line B",
-            
-            "3 SWG-A": "11kV Incomer A",
-            "04SWG-1A": "11kV Incomer A",
-            "04SWG-2A": "11kV Incomer A",
-            "04SWG-3A": "11kV Incomer A",
-            "04SWG-4A": "11kV Incomer A",
-            "11kV Extension (ECC-EXT)": "11kV Incomer A",
-            
-            "3 SWG-B": "11kV Incomer B",
-            "04SWG-1B": "11kV Incomer B",
-            "04SWG-2B": "11kV Incomer B",
-            "04SWG-3B": "11kV Incomer B",
-            "04SWG-4B": "11kV Incomer B",
-            "Existing EXT": "11kV Incomer B",
-            
+            "3 SWG-A": "11kV Incomer A", "04SWG-1A": "11kV Incomer A", "04SWG-2A": "11kV Incomer A", "04SWG-3A": "11kV Incomer A", "04SWG-4A": "11kV Incomer A", "11kV Extension (ECC-EXT)": "11kV Incomer A",
+            "3 SWG-B": "11kV Incomer B", "04SWG-1B": "11kV Incomer B", "04SWG-2B": "11kV Incomer B", "04SWG-3B": "11kV Incomer B", "04SWG-4B": "11kV Incomer B", "Existing EXT": "11kV Incomer B",
             "New Switchgear": "33kV GIS Line B", 
             "New/Aux DB": "New Switchgear"
         };
@@ -180,26 +158,16 @@
             { title: "Utility", items: ["Steam Network"] }
         ];
 
-        // --- 2. TRAIN DATA & TIMELINE ---
         const trains = [
-            { id: "ECC-A", max: 1100, deps: ["3 SWG-A", "04SWG-1A"] },
-            { id: "ECC-B", max: 1250, deps: ["3 SWG-B", "04SWG-1B"] },
-            { id: "ECC-C", max: 3000, deps: ["11kV Extension (ECC-EXT)", "3 SWG-A", "04SWG-2A"] },
-            { id: "ECC-L", max: 2494, deps: ["3 SWG-B", "04SWG-4B", "Existing EXT"] },
-            { id: "SAC-B", max: 850, deps: ["3 SWG-B", "Steam Network"] },
-            { id: "SAC-C", max: 2400, deps: ["3 SWG-A", "04SWG-2A", "Steam Network"] },
-            { id: "SAC-D", max: 900, deps: ["3 SWG-B", "Steam Network"] },
-            { id: "SAC-E", max: 700, deps: ["3 SWG-A", "04SWG-3A", "Steam Network"] },
-            { id: "SAC-F", max: 1200, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] },
-            { id: "SAC-H", max: 2000, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] },
-            { id: "SAC-J", max: 2250, deps: ["3 SWG-B", "04SWG-4B", "Steam Network"] },
-            { id: "SAC-K", max: 2200, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] },
-            { id: "DFC-A", max: 900, deps: ["3 SWG-A", "Steam Network"] },
-            { id: "DFC-B", max: 1000, deps: ["3 SWG-B", "Steam Network"] },
-            { id: "ECC-D (New)", max: 2500, deps: ["3 SWG-B", "New/Aux DB"] },
-            { id: "ECC-G (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] },
-            { id: "ECC-B (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] },
-            { id: "ECC-F (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] },
+            { id: "ECC-A", max: 1100, deps: ["3 SWG-A", "04SWG-1A"] }, { id: "ECC-B", max: 1250, deps: ["3 SWG-B", "04SWG-1B"] },
+            { id: "ECC-C", max: 3000, deps: ["11kV Extension (ECC-EXT)", "3 SWG-A", "04SWG-2A"] }, { id: "ECC-L", max: 2494, deps: ["3 SWG-B", "04SWG-4B", "Existing EXT"] },
+            { id: "SAC-B", max: 850, deps: ["3 SWG-B", "Steam Network"] }, { id: "SAC-C", max: 2400, deps: ["3 SWG-A", "04SWG-2A", "Steam Network"] },
+            { id: "SAC-D", max: 900, deps: ["3 SWG-B", "Steam Network"] }, { id: "SAC-E", max: 700, deps: ["3 SWG-A", "04SWG-3A", "Steam Network"] },
+            { id: "SAC-F", max: 1200, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] }, { id: "SAC-H", max: 2000, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] },
+            { id: "SAC-J", max: 2250, deps: ["3 SWG-B", "04SWG-4B", "Steam Network"] }, { id: "SAC-K", max: 2200, deps: ["3 SWG-A", "04SWG-4A", "Steam Network"] },
+            { id: "DFC-A", max: 900, deps: ["3 SWG-A", "Steam Network"] }, { id: "DFC-B", max: 1000, deps: ["3 SWG-B", "Steam Network"] },
+            { id: "ECC-D (New)", max: 2500, deps: ["3 SWG-B", "New/Aux DB"] }, { id: "ECC-G (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] },
+            { id: "ECC-B (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] }, { id: "ECC-F (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] },
             { id: "ECC-E (New)", max: 2500, deps: ["New Switchgear", "New/Aux DB"] }
         ];
 
@@ -212,26 +180,23 @@
         };
 
         const demands = [
-            { label: "Peak Day", value: 30000, tesRT: 8500 },
-            { label: "Normal Day", value: 26500, tesRT: 8500 },
-            { label: "Night Load", value: 15000, tesRT: 0 }
+            { label: "Peak", value: 30000, tesRT: 8500 },
+            { label: "Normal", value: 26500, tesRT: 8500 },
+            { label: "Night", value: 15000, tesRT: 0 }
         ];
 
-        // --- 3. APP STATE ---
         let currentYear = 2026;
-        let currentDemandObj = demands[1]; // Default to Normal Day
+        let currentDemandObj = demands[1]; 
         let isolationState = {}; 
         
         SWG_GROUPS.forEach(group => group.items.forEach(swg => isolationState[swg] = false));
 
-        // --- 4. CASCADING CHECKER ---
         function checkIsolationSource(swg) {
             if (isolationState[swg] === true) return swg;
             if (PARENT_MAP[swg]) return checkIsolationSource(PARENT_MAP[swg]);
             return false;
         }
 
-        // --- 5. UI RENDERING ---
         function initApp() {
             renderYearFilters();
             renderDemandFilters();
@@ -246,7 +211,7 @@
                 const isActive = y === currentYear;
                 const btn = document.createElement('button');
                 btn.innerText = y;
-                btn.className = `px-4 py-1.5 rounded-lg text-sm font-bold transition-all duration-200 ${isActive ? 'bg-white text-petronas-dark shadow-sm ring-1 ring-gray-200' : 'text-textsub hover:text-gray-900'}`;
+                btn.className = `flex-shrink-0 px-3 sm:px-4 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-sm font-bold transition-all duration-200 ${isActive ? 'bg-white text-petronas-dark shadow-sm ring-1 ring-gray-200' : 'text-textsub hover:text-gray-900'}`;
                 btn.onclick = () => { currentYear = y; renderYearFilters(); runSimulation(); };
                 container.appendChild(btn);
             });
@@ -258,8 +223,8 @@
             demands.forEach(d => {
                 const isActive = d.value === currentDemandObj.value;
                 const btn = document.createElement('button');
-                btn.innerHTML = `${d.label} <span class="text-xs font-normal opacity-80">(${d.value/1000}k)</span>`;
-                btn.className = `px-4 py-1.5 rounded-lg text-sm font-bold transition-all duration-200 ${isActive ? 'bg-white text-petronas-dark shadow-sm ring-1 ring-gray-200' : 'text-textsub hover:text-gray-900'}`;
+                btn.innerHTML = `${d.label} <span class="text-[9px] sm:text-xs font-normal opacity-80">(${d.value/1000}k)</span>`;
+                btn.className = `flex-shrink-0 px-2 sm:px-4 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-sm font-bold transition-all duration-200 ${isActive ? 'bg-white text-petronas-dark shadow-sm ring-1 ring-gray-200' : 'text-textsub hover:text-gray-900'}`;
                 btn.onclick = () => { 
                     currentDemandObj = d; 
                     document.getElementById('kpi-target').innerText = d.value.toLocaleString();
@@ -276,7 +241,7 @@
             
             SWG_GROUPS.forEach(group => {
                 const groupDiv = document.createElement('div');
-                groupDiv.innerHTML = `<h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-100 pb-1">${group.title}</h3>`;
+                groupDiv.innerHTML = `<h3 class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 sm:mb-2 border-b border-gray-100 pb-1">${group.title}</h3>`;
                 
                 group.items.forEach(swg => {
                     const sourceTrip = checkIsolationSource(swg);
@@ -284,7 +249,7 @@
                     const isIndirectlyIsolated = !isDirectlyIsolated && sourceTrip;
                     
                     const div = document.createElement('div');
-                    div.className = `flex justify-between items-center py-2 px-2 rounded-lg transition-colors ${sourceTrip ? 'bg-gray-50' : 'hover:bg-petronas-light/50'}`;
+                    div.className = `flex justify-between items-center py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg transition-colors ${sourceTrip ? 'bg-gray-50' : 'hover:bg-petronas-light/50'}`;
                     
                     let statusText = "NORMAL";
                     let statusColor = "text-petronas-main";
@@ -293,8 +258,8 @@
 
                     div.innerHTML = `
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold ${sourceTrip ? 'text-gray-500' : 'text-textmain'}">${swg}</span>
-                            <span class="text-[10px] font-bold ${statusColor} uppercase tracking-wide">${statusText}</span>
+                            <span class="text-[11px] sm:text-[13px] font-bold ${sourceTrip ? 'text-gray-400' : 'text-textmain'}">${swg}</span>
+                            <span class="text-[8px] sm:text-[10px] font-bold ${statusColor} uppercase tracking-wide leading-tight">${statusText}</span>
                         </div>
                         <label class="pt-toggle flex-shrink-0">
                             <input type="checkbox" ${isDirectlyIsolated ? 'checked' : ''} onchange="toggleSWG('${swg}')">
@@ -319,53 +284,48 @@
             runSimulation();
         }
 
-        // --- 6. SIMULATION ENGINE ---
         function runSimulation() {
             const container = document.getElementById('train-grid');
             container.innerHTML = '';
             
             let activeFleetCount = 0;
-            
-            // 1. INJECT PLANT 4 TES TANK (Independent)
             const tesRT = currentDemandObj.tesRT;
             let totalAvailableRT = tesRT; 
 
             const tesCard = document.createElement('div');
             if (tesRT > 0) {
-                tesCard.className = `bg-petronas-light/40 border border-petronas-main/40 rounded-2xl p-5 shadow-soft`;
+                tesCard.className = `bg-petronas-light/40 border border-petronas-main/40 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm`;
                 tesCard.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-black text-petronas-dark">Plant 4 TES Tank</h3>
-                        <div class="w-2.5 h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>
+                    <div class="flex justify-between items-start mb-1 sm:mb-2">
+                        <h3 class="text-sm sm:text-lg font-black text-petronas-dark">Plant 4 TES Tank</h3>
+                        <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-petronas-dark">${tesRT.toLocaleString()}</span>
-                        <span class="text-sm font-bold text-textsub">/ 8,500 RT</span>
+                        <span class="text-xl sm:text-3xl font-black text-petronas-dark">${tesRT.toLocaleString()}</span>
+                        <span class="text-[10px] sm:text-sm font-bold text-textsub">/ 8,500 RT</span>
                     </div>
-                    <div class="mt-4 flex items-center gap-2 text-[11px] font-bold text-petronas-main bg-white/60 py-1.5 px-3 rounded-lg border border-petronas-main/20">
-                        ⚡ Independent Power Source (Discharging)
+                    <div class="mt-2 sm:mt-4 flex items-center gap-1.5 text-[9px] sm:text-[11px] font-bold text-petronas-main bg-white/60 py-1 sm:py-1.5 px-2 sm:px-3 rounded-lg border border-petronas-main/20">
+                        ⚡ Independent Source
                     </div>
                 `;
             } else {
-                tesCard.className = `bg-gray-100 border border-gray-200 rounded-2xl p-5 opacity-70`;
+                tesCard.className = `bg-gray-100 border border-gray-200 rounded-xl sm:rounded-2xl p-3 sm:p-5 opacity-70`;
                 tesCard.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-black text-gray-500">Plant 4 TES Tank</h3>
-                        <div class="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
+                    <div class="flex justify-between items-start mb-1 sm:mb-2">
+                        <h3 class="text-sm sm:text-lg font-black text-gray-500">Plant 4 TES Tank</h3>
+                        <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-gray-400"></div>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-500">0</span>
-                        <span class="text-sm font-bold text-textsub">/ 8,500 RT</span>
+                        <span class="text-xl sm:text-3xl font-black text-gray-500">0</span>
+                        <span class="text-[10px] sm:text-sm font-bold text-textsub">/ 8,500 RT</span>
                     </div>
-                    <div class="mt-4 flex items-center gap-2 text-[11px] font-bold text-gray-500 bg-gray-200/60 py-1.5 px-3 rounded-lg border border-gray-300">
-                        🌙 Standby Mode (Night Phase)
+                    <div class="mt-2 sm:mt-4 flex items-center gap-1.5 text-[9px] sm:text-[11px] font-bold text-gray-500 bg-gray-200/60 py-1 sm:py-1.5 px-2 sm:px-3 rounded-lg border border-gray-300">
+                        🌙 Standby (Night)
                     </div>
                 `;
             }
             container.appendChild(tesCard);
 
-
-            // 2. INJECT PLANT 2 CHILLERS
             const yearRules = timeline[currentYear];
             let activeTrains = trains.filter(t => !yearRules.decom.includes(t.id) && !yearRules.not_comm.includes(t.id));
             
@@ -383,50 +343,49 @@
                 });
 
                 failReasons = [...new Set(failReasons)];
-
                 const currentRT = isRunning ? train.max : 0;
                 totalAvailableRT += currentRT;
 
                 const card = document.createElement('div');
                 const borderClass = isRunning ? 'border-gray-100' : 'border-red-200 bg-red-50/40';
-                const shadowClass = isRunning ? 'shadow-soft hover:shadow-hover' : 'shadow-none';
+                const shadowClass = isRunning ? 'shadow-sm hover:shadow-hover' : 'shadow-none';
                 
-                card.className = `bg-card border rounded-2xl p-5 transition-all duration-300 ${borderClass} ${shadowClass}`;
+                card.className = `bg-card border rounded-xl sm:rounded-2xl p-3 sm:p-5 transition-all duration-300 ${borderClass} ${shadowClass}`;
                 
                 let reasonHtml = isRunning 
-                    ? `<div class="mt-4 flex items-center gap-2 text-[11px] font-bold text-petronas-main bg-petronas-light/50 py-1.5 px-3 rounded-lg"><span class="w-2 h-2 rounded-full bg-petronas-main animate-pulse"></span> Online & Ready</div>`
-                    : `<div class="mt-4 p-3 bg-white rounded-xl border border-red-100 shadow-sm"><p class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Tripped at Source:</p><p class="text-xs text-gray-800 font-bold leading-tight">❌ ${failReasons.join("<br>❌ ")}</p></div>`;
+                    ? `<div class="mt-2 sm:mt-4 flex items-center gap-1.5 text-[9px] sm:text-[11px] font-bold text-petronas-main bg-petronas-light/50 py-1 sm:py-1.5 px-2 sm:px-3 rounded-lg"><span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-petronas-main animate-pulse"></span> Online & Ready</div>`
+                    : `<div class="mt-2 sm:mt-4 p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl border border-red-100 shadow-sm"><p class="text-[8px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest mb-0.5 sm:mb-1">Tripped at Source:</p><p class="text-[10px] sm:text-xs text-gray-800 font-bold leading-tight">❌ ${failReasons.join("<br>❌ ")}</p></div>`;
 
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-black text-gray-800">${train.id}</h3>
-                        ${isRunning ? '<div class="w-2.5 h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>' : '<div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>'}
+                    <div class="flex justify-between items-start mb-1 sm:mb-2">
+                        <h3 class="text-sm sm:text-lg font-black text-gray-800">${train.id}</h3>
+                        ${isRunning ? '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>' : '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500"></div>'}
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black ${isRunning ? 'text-petronas-dark' : 'text-red-500'}">${currentRT.toLocaleString()}</span>
-                        <span class="text-sm font-bold text-textsub">/ ${train.max.toLocaleString()} RT</span>
+                        <span class="text-xl sm:text-3xl font-black ${isRunning ? 'text-petronas-dark' : 'text-red-500'}">${currentRT.toLocaleString()}</span>
+                        <span class="text-[10px] sm:text-sm font-bold text-textsub">/ ${train.max.toLocaleString()} RT</span>
                     </div>
                     ${reasonHtml}
                 `;
                 container.appendChild(card);
             });
 
-            // Update Headers & Alarm Logic
             const kpiRT = document.getElementById('kpi-rt');
             kpiRT.innerText = totalAvailableRT.toLocaleString();
-            document.getElementById('fleet-count').innerText = `${activeFleetCount} Plant 2 Trains + TES Tank`;
+            document.getElementById('fleet-count').innerText = `${activeFleetCount} Trains + TES`;
 
             const isDeficit = totalAvailableRT < currentDemandObj.value;
             const banner = document.getElementById('alarm-banner');
+            const kpiBlock = document.getElementById('kpi-block');
             
             if (isDeficit) {
                 kpiRT.classList.replace('text-petronas-main', 'text-red-600');
                 banner.classList.remove('hidden');
-                document.querySelector('.sticky').classList.add('alarm-active');
+                kpiBlock.classList.add('alarm-active');
             } else {
                 kpiRT.classList.replace('text-red-600', 'text-petronas-main');
                 banner.classList.add('hidden');
-                document.querySelector('.sticky').classList.remove('alarm-active');
+                kpiBlock.classList.remove('alarm-active');
             }
         }
 
