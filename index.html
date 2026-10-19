@@ -31,7 +31,6 @@
         }
     </script>
     <style>
-        /* Smooth Toggle Switch - Petronas Themed */
         .pt-toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
         @media (min-width: 640px) { .pt-toggle { width: 50px; height: 26px; } }
         .pt-toggle input { opacity: 0; width: 0; height: 0; }
@@ -42,7 +41,6 @@
         input:checked + .pt-slider:before { transform: translateX(20px); }
         @media (min-width: 640px) { input:checked + .pt-slider:before { transform: translateX(24px); } }
 
-        /* Flashing Alarm */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); border-color: #f3f4f6; }
             50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: #EF4444; }
@@ -50,7 +48,6 @@
         }
         .alarm-active { animation: pulse-red 2s infinite; }
         
-        /* Hide scrollbar for compact mobile filters */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -62,14 +59,12 @@
     <!-- STICKY HEADER -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm transition-all duration-300" id="header-container">
         
-        <!-- ALARM BANNER -->
         <div id="alarm-banner" class="hidden bg-red-600 text-white text-center py-1 sm:py-2 text-[10px] sm:text-sm font-bold tracking-wide uppercase transition-all duration-300">
             ⚠️ CAPACITY BELOW TARGET DEMAND! ⚠️
         </div>
 
         <div class="max-w-[1500px] mx-auto px-3 sm:px-6 py-2 sm:py-4 flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-2 sm:gap-4">
             
-            <!-- Title Row -->
             <div class="flex justify-between items-center w-full xl:w-auto">
                 <div class="flex items-center gap-2 sm:gap-3">
                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-petronas-main to-petronas-dark flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-md flex-shrink-0">⚡</div>
@@ -80,16 +75,13 @@
                 </div>
             </div>
 
-            <!-- Filters & KPI Block -->
             <div class="flex flex-col sm:flex-row w-full xl:w-auto items-stretch sm:items-center gap-2 sm:gap-4">
                 
-                <!-- Filters Container (Scrollable on mobile) -->
                 <div class="flex flex-col gap-1.5 sm:gap-2 w-full">
                     <div class="bg-gray-100 p-1 rounded-lg flex items-center shadow-inner border border-gray-200 overflow-x-auto hide-scrollbar" id="year-filters"></div>
                     <div class="bg-gray-100 p-1 rounded-lg flex items-center shadow-inner border border-gray-200 overflow-x-auto hide-scrollbar" id="demand-filters"></div>
                 </div>
 
-                <!-- KPI & Reset Row -->
                 <div id="kpi-block" class="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 bg-gray-50 sm:bg-transparent p-2 sm:p-0 rounded-lg sm:rounded-none border border-gray-100 sm:border-transparent transition-all duration-300">
                     <div class="text-left sm:text-right">
                         <p class="text-[9px] sm:text-xs font-bold text-textsub tracking-wider uppercase mb-0 sm:mb-0.5">Target vs Available</p>
@@ -111,7 +103,6 @@
     <main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-8">
             
-            <!-- LEFT PANEL: HIERARCHICAL SWITCHGEARS -->
             <div class="xl:col-span-3 space-y-4 sm:space-y-6">
                 <div class="bg-card rounded-xl sm:rounded-2xl shadow-soft p-3 sm:p-5 border border-gray-100">
                     <h2 class="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
@@ -119,22 +110,17 @@
                     </h2>
                     <p class="text-[11px] sm:text-xs text-textsub mb-3 sm:mb-5 leading-relaxed">Isolating an upstream breaker will automatically cut power to all downstream panels.</p>
                     
-                    <div id="switchgear-list" class="space-y-3 sm:space-y-5">
-                        <!-- Sections injected via JS -->
-                    </div>
+                    <div id="switchgear-list" class="space-y-3 sm:space-y-5"></div>
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: CHILLER IMPACT MATRIX -->
             <div class="xl:col-span-9">
                 <div class="flex justify-between items-end mb-3 sm:mb-4 px-1">
                     <h2 class="text-lg sm:text-xl font-bold text-gray-800">Chiller Impact Matrix</h2>
                     <p id="fleet-count" class="text-[10px] sm:text-sm font-bold text-petronas-main bg-petronas-light px-2 py-1 rounded-full">0 Active</p>
                 </div>
                 
-                <div id="train-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-                    <!-- Train cards injected here -->
-                </div>
+                <div id="train-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5"></div>
             </div>
 
         </div>
@@ -180,16 +166,18 @@
         };
 
         const demands = [
-            { label: "Peak", value: 30000, tesRT: 8500 },
-            { label: "Normal", value: 26500, tesRT: 8500 },
-            { label: "Night", value: 15000, tesRT: 0 }
+            { label: "Peak Day", value: 30000, tesRT: 8500 },
+            { label: "Normal Day", value: 26500, tesRT: 8500 },
+            { label: "Night Load", value: 15000, tesRT: 0 }
         ];
 
         let currentYear = 2026;
         let currentDemandObj = demands[1]; 
         let isolationState = {}; 
+        let maintenanceState = {}; 
         
         SWG_GROUPS.forEach(group => group.items.forEach(swg => isolationState[swg] = false));
+        trains.forEach(t => maintenanceState[t.id] = false);
 
         function checkIsolationSource(swg) {
             if (isolationState[swg] === true) return swg;
@@ -278,8 +266,14 @@
             runSimulation();
         }
 
+        function toggleMaintenance(id) {
+            maintenanceState[id] = !maintenanceState[id];
+            runSimulation();
+        }
+
         function resetAll() {
             for (let key in isolationState) isolationState[key] = false;
+            for (let key in maintenanceState) maintenanceState[key] = false;
             renderSwitchgears();
             runSimulation();
         }
@@ -331,38 +325,71 @@
             
             activeTrains.forEach(train => {
                 activeFleetCount++;
-                let isRunning = true;
+                let isElectricallyRunning = true;
                 let failReasons = [];
 
                 train.deps.forEach(dep => {
                     const tripSource = checkIsolationSource(dep);
                     if (tripSource) {
-                        isRunning = false;
+                        isElectricallyRunning = false;
                         failReasons.push(tripSource);
                     }
                 });
 
                 failReasons = [...new Set(failReasons)];
-                const currentRT = isRunning ? train.max : 0;
+                
+                const isUnderMaintenance = maintenanceState[train.id];
+                const isOnline = isElectricallyRunning && !isUnderMaintenance;
+                const currentRT = isOnline ? train.max : 0;
+                
                 totalAvailableRT += currentRT;
 
                 const card = document.createElement('div');
-                const borderClass = isRunning ? 'border-gray-100' : 'border-red-200 bg-red-50/40';
-                const shadowClass = isRunning ? 'shadow-sm hover:shadow-hover' : 'shadow-none';
+                let borderClass = 'border-gray-100';
+                let bgClass = 'bg-card';
+                let statusDot = '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>';
+
+                if (!isElectricallyRunning) {
+                    borderClass = 'border-red-200';
+                    bgClass = 'bg-red-50/40';
+                    statusDot = '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500"></div>';
+                } else if (isUnderMaintenance) {
+                    borderClass = 'border-orange-200';
+                    bgClass = 'bg-orange-50/40';
+                    statusDot = '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-orange-500"></div>';
+                }
+
+                const shadowClass = isOnline ? 'shadow-sm hover:shadow-hover' : 'shadow-none';
+                card.className = `${bgClass} border rounded-xl sm:rounded-2xl p-3 sm:p-5 transition-all duration-300 ${borderClass} ${shadowClass}`;
                 
-                card.className = `bg-card border rounded-xl sm:rounded-2xl p-3 sm:p-5 transition-all duration-300 ${borderClass} ${shadowClass}`;
-                
-                let reasonHtml = isRunning 
-                    ? `<div class="mt-2 sm:mt-4 flex items-center gap-1.5 text-[9px] sm:text-[11px] font-bold text-petronas-main bg-petronas-light/50 py-1 sm:py-1.5 px-2 sm:px-3 rounded-lg"><span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-petronas-main animate-pulse"></span> Online & Ready</div>`
-                    : `<div class="mt-2 sm:mt-4 p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl border border-red-100 shadow-sm"><p class="text-[8px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest mb-0.5 sm:mb-1">Tripped at Source:</p><p class="text-[10px] sm:text-xs text-gray-800 font-bold leading-tight">❌ ${failReasons.join("<br>❌ ")}</p></div>`;
+                let reasonHtml = '';
+                if (isOnline) {
+                    reasonHtml = `<div class="mt-2 sm:mt-4 flex items-center gap-1.5 text-[9px] sm:text-[11px] font-bold text-petronas-main bg-petronas-light/50 py-1 sm:py-1.5 px-2 sm:px-3 rounded-lg"><span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-petronas-main animate-pulse"></span> Online & Ready</div>`;
+                } else {
+                    let errorMsgs = [];
+                    if (!isElectricallyRunning) {
+                        errorMsgs.push(`<p class="text-[8px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest mb-0.5 sm:mb-1">Tripped at Source:</p><p class="text-[10px] sm:text-xs text-gray-800 font-bold leading-tight">❌ ${failReasons.join("<br>❌ ")}</p>`);
+                    }
+                    if (isUnderMaintenance) {
+                        errorMsgs.push(`<p class="text-[10px] sm:text-xs font-bold text-orange-700">🛠️ Out of Service for Maintenance</p>`);
+                    }
+                    reasonHtml = `<div class="mt-2 sm:mt-4 p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl border ${!isElectricallyRunning ? 'border-red-100' : 'border-orange-100'} shadow-sm space-y-2">${errorMsgs.join('<hr class="border-gray-100">')}</div>`;
+                }
+
+                const maintBtnClass = isUnderMaintenance ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-200';
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-1 sm:mb-2">
-                        <h3 class="text-sm sm:text-lg font-black text-gray-800">${train.id}</h3>
-                        ${isRunning ? '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-petronas-main shadow-[0_0_8px_rgba(0,161,156,0.5)]"></div>' : '<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500"></div>'}
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm sm:text-lg font-black text-gray-800">${train.id}</h3>
+                            ${statusDot}
+                        </div>
+                        <button onclick="toggleMaintenance('${train.id}')" class="flex items-center gap-1 px-2 py-1 text-[8px] sm:text-[10px] font-bold rounded border transition-colors ${maintBtnClass}">
+                            🛠️ MAINT
+                        </button>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-xl sm:text-3xl font-black ${isRunning ? 'text-petronas-dark' : 'text-red-500'}">${currentRT.toLocaleString()}</span>
+                        <span class="text-xl sm:text-3xl font-black ${isOnline ? 'text-petronas-dark' : (isUnderMaintenance ? 'text-orange-500' : 'text-red-500')}">${currentRT.toLocaleString()}</span>
                         <span class="text-[10px] sm:text-sm font-bold text-textsub">/ ${train.max.toLocaleString()} RT</span>
                     </div>
                     ${reasonHtml}
